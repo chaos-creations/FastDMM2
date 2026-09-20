@@ -132,7 +132,7 @@ module.exports = class GithubFileContext {
 				for(let i = 0; i < 5; i++) {
 					try {
 						
-						let response = await fetch(is_url ? path : `https://cdn.jsdelivr.net/gh/${this.name}@${this.commit_hash}/${tree_entry.path}`, {cache: "force-cache"});
+						let response = await fetch(is_url ? path : `https://raw.githubusercontent.com/${this.name}/${this.commit_hash}/${tree_entry.path.split('/').map(encodeURIComponent).join('/')}`, {cache: "force-cache"});
 						if(response.status != 200) throw new Error(`${response.status} ${response.statusText} - ${await response.text()}`);
 						blob = await response.blob();
 						err = null;

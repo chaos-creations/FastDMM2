@@ -769,7 +769,7 @@ class Parser {
 			throw new Error('Unexpected ' + next + ' at ' + next.format_pos());
 		}
 		next = pointer.get_next();
-		while(next instanceof SymbolToken && (!next.whitespace_flag || ['--', '++', '['].includes(next.value))	 && ['--', '++', '[', '.', ':', '?.', '?:'].includes(next.value)) {
+		while(next instanceof SymbolToken && (!next.whitespace_flag || ['--', '++', '['].includes(next.value))	 && ['--', '++', '[', '.', ':', '?.', '?:', '::'].includes(next.value)) {
 			pointer.advance();
 			if(next.value == '--' || next.value == '++') {
 				exp = new UnaryPostfixNode(next, exp);
@@ -828,6 +828,11 @@ class Parser {
 				}
 				args.push(Parser.parse_expression(pointer));
 				lookahead = pointer.get_next(false);
+				if(lookahead instanceof SymbolToken && lookahead.value == ";") {
+					pointer.advance(false);
+					args[args.length - 1] = Parser.parse_expression(pointer);
+					lookahead = pointer.get_next(false);
+				}
 			} else {
 				throw new Error(`Expected , or ) at ${lookahead.format_pos()}`);
 			}
